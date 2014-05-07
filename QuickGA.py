@@ -1,8 +1,8 @@
-'''
+"""
 TODO:
     - Errors shouldn't call exit.
     - Parameterise everything.
-'''
+"""
 from sys import exit, float_info
 import copy
 import numpy as np
