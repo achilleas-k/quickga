@@ -1,13 +1,12 @@
 """
 TODO:
-    - Errors shouldn't call exit.
+    - Errors shouldn't call exit (use warnings instead)
     - Parameterise everything.
 """
-from sys import exit, float_info
+from sys import exit
 import copy
 import numpy as np
-import warnings
-import multiprocessing
+
 
 class GA:
 
@@ -229,6 +228,4 @@ Falling back to random selection.')
             Equality operator checks chromosomes for all() equality.
             '''
             return np.all(self.chromosome == other.chromosome)
-
-
 
