@@ -5,10 +5,10 @@ It might serve as the basis for a more comprehensive library in the future, but 
 
 Uses fixed rules for mutation, crossover and selection:
 
-    - 2-point crossover.
-    - Gaussian mutation.
-    - Random or best selection for reproduction.
-    - Worst individuals are dropped each generation.
+- 2-point crossover.
+- Gaussian mutation.
+- Random or best selection for reproduction.
+- Worst individuals are dropped each generation.
 
 #2. Usage
 Implement an instance of the `GA` class and override the `fitnessfunc` function.
