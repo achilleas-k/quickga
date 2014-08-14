@@ -55,10 +55,10 @@ class GA:
         '''
         Calculates the fitness value of an individual, stores it in the
         individual's `fitness` member and returns it.
-        This function is the target function to be optimised
-        by the GA.
+        This function is the target function to be optimised by the GA.
+
+        This function should be overwritten by any implementation of the class.
         '''
-        return None
 
     def evaluate_population(self, optargs):
         '''
