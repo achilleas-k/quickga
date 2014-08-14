@@ -29,8 +29,8 @@ import numpy as np
 
 class GA:
 
-    def __init__(self, max_population, chromlength,\
-            mutation_probability=1, mutation_strength=0.1,\
+    def __init__(self, max_population, chromlength,
+            mutation_probability=1, mutation_strength=0.1,
             selection_percentage=0.2, init_pop=None, outputfile='quickga.log'):
         self.max_population = max_population
         self.mutation_probability = mutation_probability
@@ -86,8 +86,8 @@ class GA:
         parchrom_one = copy.deepcopy(parent_one.chromosome)
         parchrom_two = copy.deepcopy(parent_two.chromosome)
         if parent_one.chromlength != parent_two.chromlength:
-            exit('ERROR: Chromosome lengths don\'t match. '
-                        'Skipping crossover.')
+            exit("ERROR: Chromosome lengths don't match. "
+                        "Skipping crossover.")
 
         cutpoint_one = cutpoint_two = 0
         chromlength = parent_one.chromlength
@@ -106,8 +106,8 @@ class GA:
         childchrom_two = np.append(childchrom_two, parchrom_two[cutpoint_two:])
         if childchrom_one.size != childchrom_two.size:
             exit('WTF')
-        if not childchrom_one.size == parchrom_one.size ==\
-                childchrom_two.size == parchrom_two.size:
+        if not (childchrom_one.size == parchrom_one.size ==
+                childchrom_two.size == parchrom_two.size):
                     exit('ERROR: Chromosome lengths changed during crossover')
 
         '''
@@ -126,9 +126,9 @@ class GA:
         '''
         try:
             if individual.chromosome.dtype is np.dtype(np.float):
-                individual.chromosome += \
-                    np.random.normal(0, self.mutation_strength,\
-                        individual.chromlength)
+                individual.chromosome += np.random.normal(
+                    0, self.mutation_strength,
+                    individual.chromlength)
             individual.fitness = None # mark fitness as 'unevaluated'
         except (TypeError, AttributeError):
             exit('ERROR: (Mutation) Invalid chromosome type. '
@@ -164,8 +164,8 @@ class GA:
         elif method == 'best':
             return self.population[0], self.population[1]
         elif method == 'roulette':
-            print('WARNING: Roulette-wheel selection not yet implemented. \
-Falling back to random selection.')
+            print("WARNING: Roulette-wheel selection not yet implemented. "
+                  "Falling back to random selection.")
             return self.select('rand')
         else:
             exit('ERROR: Invalid selection method')
