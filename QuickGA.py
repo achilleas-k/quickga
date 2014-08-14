@@ -51,7 +51,7 @@ class GA:
             newind = self.Individual(randchrom, 0)
             self.population.append(newind)
 
-    def fitnessfunc(self, individual, optargs):
+    def fitnessfunc(self):
         '''
         Calculates the fitness value of an individual, stores it in the
         individual's `fitness` member and returns it.
