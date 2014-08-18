@@ -1,0 +1,1 @@
+from quickga import GA
