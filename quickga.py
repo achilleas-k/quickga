@@ -35,7 +35,7 @@ class GA:
                  mutation_probability=0.01, mutation_strength=0.1,
                  selection_percentage=0.2,
                  genemin=float("-inf"), genemax=float("inf"),
-                 init_pop=None, outputfile="quickga.log"):
+                 init_pop=None, logfile="quickga.log"):
         self.max_population = max_population
         self.mutation_probability = mutation_probability
         self.mutation_strength = mutation_strength
@@ -43,7 +43,7 @@ class GA:
         self.chromlength = chromlength
         self.genebounds = (genemin, genemax)
         self.population = init_pop
-        self.outputfile = open(outputfile, 'w')
+        self.logfile = open(logfile, 'w')
         if self.population is None:
             self.population = []
             self.init_population(self.max_population, chromlength)
@@ -188,7 +188,7 @@ class GA:
             exit("ERROR: Invalid selection method")
 
     def saveprogress(self, gen, bestind, alltime_bestind):
-        self.outputfile.write(
+        self.logfile.write(
                 "Generation %i\n"
                 "Best individual of cur gen:\n"
                 "%s\n"
@@ -236,14 +236,14 @@ class GA:
                 # TODO: Also parameterise number of individuals to keep when
                 # resetting
                 print("Age limit reached. Re-initializing population\n")
-                self.outputfile.write("Age limit reached. "
+                self.logfile.write("Age limit reached. "
                         "Re-initializing population.\n\n")
                 self.init_population(self.max_population, self.chromlength)
 
         self.saveprogress(gen, bestind, alltime_bestind)
         print("Final generation\nBest individual:\n%s\n" % (
             bestind))
-        self.outputfile.close()
+        self.logfile.close()
 
     class Individual:
 
