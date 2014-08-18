@@ -32,7 +32,7 @@ import numpy as np
 class GA:
 
     def __init__(self, max_population, chromlength,
-                 mutation_probability=1, mutation_strength=0.1,
+                 mutation_probability=0.01, mutation_strength=0.1,
                  selection_percentage=0.2,
                  genemin=float("-inf"), genemax=float("inf"),
                  init_pop=None, outputfile="quickga.log"):
@@ -131,23 +131,21 @@ class GA:
 
     def mutate(self, individual):
         """
-        Mutates one gene of an individual's chromosome in place. Uniform gene
-        selection - Gaussian mutation with `stdev = mutation_strength`
+        Mutates each gene of an individual's chromosome in place, based on the
+        `mutation_probability`. Mutation applies a Gaussian random value drawn
+        from distribution with mean 0 and `stdev = mutation_strength`
         Integer genes get rounded to the nearest int.
         """
         try:
-            # mutate one gene with a gaussian random value
-            gene_idx = np.random.randint(individual.chromlength)
-            gene_value = individual.chromosome[gene_idx]
-            gene_value += np.random.normal(0, self.mutation_strength)
-            if gene_value < self.genebounds[0]:
-                gene_value = self.genebounds[0]
-            elif gene_value > self.genebounds[1]:
-                gene_value = self.genebound[1]
-            if issubclass(individual.chromosome.dtype.type, np.floating):
-                individual.chromosome[gene_idx] = gene_value
-            elif issubclass(individual.chromosome.dtype.type, np.integer):
-                individual.chromosome[gene_idx] = int(np.round(gene_value))
+            chromtype = individual.chromosome.dtype.type
+            randvars = np.random.random_sample(self.chromlength)
+            mutation_value = np.random.normal(0, self.mutation_strength,
+                                              self.chromlength)
+            newchrom = individual.chromosome + mutation_value*(randvars < self.mutation_probability)
+            newchrom = np.clip(newchrom, *self.genebounds)
+            if issubclass(individual.chromosome.dtype.type, np.integer):
+                newchrom = np.round(newchrom)
+            individual.chromosome = newchrom.astype(chromtype)
             individual.fitness = None # mark fitness as 'unevaluated'
         except (TypeError, AttributeError):
             exit("ERROR: (Mutation) Invalid chromosome type. "
