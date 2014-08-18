@@ -32,13 +32,16 @@ import numpy as np
 class GA:
 
     def __init__(self, max_population, chromlength,
-            mutation_probability=1, mutation_strength=0.1,
-            selection_percentage=0.2, init_pop=None, outputfile="quickga.log"):
+                 mutation_probability=1, mutation_strength=0.1,
+                 selection_percentage=0.2,
+                 genemin=float("-inf"), genemax=float("inf"),
+                 init_pop=None, outputfile="quickga.log"):
         self.max_population = max_population
         self.mutation_probability = mutation_probability
         self.mutation_strength = mutation_strength
         self.selection_percentage = selection_percentage
         self.chromlength = chromlength
+        self.genebounds = (genemin, genemax)
         self.population = init_pop
         self.outputfile = open(outputfile, 'w')
         if self.population is None:
@@ -59,7 +62,13 @@ class GA:
         individual's `fitness` member and returns it.
         This function is the target function to be optimised by the GA.
 
-        This function should be overwritten by any implementation of the class.
+        This function should be overwritten by any implementation of the
+        class.
+
+        TODO: This could be done better. Have the storing and
+        returning parts coded in the function and have another function,
+        `evaluate` the fitness of an arbitrary chromosome, with no connection
+        to the classes in this file.
         """
 
     def evaluate_population(self, optargs):
@@ -122,17 +131,27 @@ class GA:
 
     def mutate(self, individual):
         """
-        Mutates an individual's chromosomes in place.
+        Mutates one gene of an individual's chromosome in place. Uniform gene
+        selection - Gaussian mutation with `stdev = mutation_strength`
+        Integer genes get rounded to the nearest int.
         """
         try:
-            if individual.chromosome.dtype is np.dtype(np.float):
-                individual.chromosome += np.random.normal(
-                    0, self.mutation_strength,
-                    individual.chromlength)
+            # mutate one gene with a gaussian random value
+            gene_idx = np.random.randint(individual.chromlength)
+            gene_value = individual.chromosome[gene_idx]
+            gene_value += np.random.normal(0, self.mutation_strength)
+            if gene_value < self.genebounds[0]:
+                gene_value = self.genebounds[0]
+            elif gene_value > self.genebounds[1]:
+                gene_value = self.genebound[1]
+            if issubclass(individual.chromosome.dtype.type, np.floating):
+                individual.chromosome[gene_idx] = gene_value
+            elif issubclass(individual.chromosome.dtype.type, np.integer):
+                individual.chromosome[gene_idx] = int(np.round(gene_value))
             individual.fitness = None # mark fitness as 'unevaluated'
         except (TypeError, AttributeError):
             exit("ERROR: (Mutation) Invalid chromosome type. "
-                            "Must be numpy float or int array.")
+                 "Must be numpy float or int array.")
 
     def insert(self, newinds):
         """
