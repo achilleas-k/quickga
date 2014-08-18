@@ -19,8 +19,10 @@
 
 
 TODO:
-    - Errors shouldn't call exit (use warnings instead)
-    - Parameterise everything.
+    - Errors shouldn't call exit
+    - Parameterise everything
+    - Variable length chromosomes
+    - More crossover, mutation and selection methods
 """
 from sys import exit
 import copy
