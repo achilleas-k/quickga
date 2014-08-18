@@ -197,6 +197,11 @@ class GA:
                 "---\n" % (gen, bestind, alltime_bestind))
 
     def optimise(self, num_generations, *optargs):
+        """
+        Starts the optimisation, i.e., runs the GA loop. Stops after
+        `num_generations`. Any subsequent arguments after `num_generations`
+        will be passed on to the fitness function as supplied.
+        """
         self.sort_population(optargs)
         # it is not significant which ind we use for best and alltime best
         # we just copy 0 to initialise the variables
