@@ -78,7 +78,7 @@ class GA:
         """
         for ind in self.population:
             if ind.fitness is None:
-                self.fitnessfunc(ind, optargs)
+                self.fitnessfunc(ind, *optargs)
 
     def sort_population(self, optargs):
         """
@@ -102,9 +102,7 @@ class GA:
 
         cutpoint_one = cutpoint_two = 0
         chromlength = parent_one.chromlength
-        chrom_idx = range(chromlength)
-        np.random.shuffle(chrom_idx)
-        cutpoints = (chrom_idx[0], chrom_idx[1])
+        cutpoints = np.random.choice(range(chromlength), 2, replace=False)
         cutpoint_one = min(cutpoints)
         cutpoint_two = max(cutpoints)
 
@@ -214,8 +212,8 @@ class GA:
             c1, c2 = self.crossover(p1, p2)
             self.mutate(c1)
             self.mutate(c2)
-            self.fitnessfunc(c1, optargs)
-            self.fitnessfunc(c2, optargs)
+            self.fitnessfunc(c1, *optargs)
+            self.fitnessfunc(c2, *optargs)
             self.insert([c1, c2])
             self.sort_population(optargs)
             curbest = copy.deepcopy(self.population[0])
