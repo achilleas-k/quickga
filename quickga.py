@@ -49,6 +49,7 @@ class GA:
             self.init_population(self.max_population, chromlength)
 
     def init_population(self, max_population, chromlength):
+        # TODO: Initialise with a given variable type (float or int)
         del(self.population)
         self.population = []
         for p in range(max_population):
