@@ -116,9 +116,9 @@ class GA:
 
         # Turn childchroms into individuals
         # Childrens' generation will be youngest parent's gen+1
-        last_gen = max(parent_one.generation, parent_two.generation)
-        newind_one = self.Individual(childchrom_one, last_gen+1)
-        newind_two = self.Individual(childchrom_two, last_gen+1)
+        child_gen = max(parent_one.generation, parent_two.generation)+1
+        newind_one = self.Individual(childchrom_one, child_gen)
+        newind_two = self.Individual(childchrom_two, child_gen)
 
         return newind_one, newind_two
 
@@ -209,7 +209,7 @@ class GA:
             self.mutate(c2)
             self.fitnessfunc(c1, *optargs)
             self.fitnessfunc(c2, *optargs)
-            self.insert([c1, c2])
+            self.insert(c1, c2)
             self.sort_population(optargs)
             curbest = copy.deepcopy(self.population[0])
             if curbest.fitness < alltime_bestind.fitness:
