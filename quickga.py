@@ -34,8 +34,8 @@ class GA:
     def __init__(self, max_population, chromlength,
                  mutation_probability=0.01, mutation_strength=0.1,
                  selection_percentage=0.2,
-                 genemin=float("-inf"), genemax=float("inf"),
-                 init_pop=None, logfile="quickga.log"):
+                 genemin=-1.0, genemax=1.0,
+                 init_pop=None, genetype=float, logfile="quickga.log"):
         self.max_population = max_population
         self.mutation_probability = mutation_probability
         self.mutation_strength = mutation_strength
@@ -43,17 +43,27 @@ class GA:
         self.chromlength = chromlength
         self.genebounds = (genemin, genemax)
         self.population = init_pop
+        self.genetype = genetype
         self.logfile = open(logfile, 'w')
+        if issubclass(self.genetype, bool):
+            exit("NOT IMPLEMENTED: Boolean gene types not implemented yet")
         if self.population is None:
             self.population = []
-            self.init_population(self.max_population, chromlength)
+            self.init_population()
 
-    def init_population(self, max_population, chromlength):
-        # TODO: Initialise with a given variable type (float or int)
+    def init_population(self):
         del(self.population)
         self.population = []
-        for p in range(max_population):
-            randchrom = np.random.random(chromlength)
+        low = self.genemin
+        high = self.genemax
+        if issubclass(self.genetype, float):
+            randfunc = lambda size: np.random.random(size)*(high-low)+low
+        elif issubclass(self.genetype, int):
+            randfunc = lambda size: np.random.randint(low, high+1, size)
+        elif issubclass(self.genetype, bool):
+            exit("NOT IMPLEMENTED: Boolean gene types not implemented yet")
+        for p in range(self.max_population):
+            randchrom = randfunc(self.chromlength)
             newind = self.Individual(randchrom, 0)
             self.population.append(newind)
 
@@ -136,15 +146,15 @@ class GA:
         Integer genes get rounded to the nearest int.
         """
         try:
-            chromtype = individual.chromosome.dtype.type
+            genetype = self.genetype
             randvars = np.random.random_sample(self.chromlength)
             mutation_value = np.random.normal(0, self.mutation_strength,
                                               self.chromlength)
             newchrom = individual.chromosome + mutation_value*(randvars < self.mutation_probability)
             newchrom = np.clip(newchrom, *self.genebounds)
-            if issubclass(individual.chromosome.dtype.type, np.integer):
+            if issubclass(individual.chromosome.dtype.type, int):
                 newchrom = np.round(newchrom)
-            individual.chromosome = newchrom.astype(chromtype)
+            individual.chromosome = newchrom.astype(genetype)
             individual.fitness = None # mark fitness as 'unevaluated'
         except (TypeError, AttributeError):
             exit("ERROR: (Mutation) Invalid chromosome type. "
