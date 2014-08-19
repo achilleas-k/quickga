@@ -54,8 +54,7 @@ class GA:
     def init_population(self):
         del(self.population)
         self.population = []
-        low = self.genemin
-        high = self.genemax
+        low, high = self.genebounds
         if issubclass(self.genetype, float):
             randfunc = lambda size: np.random.random(size)*(high-low)+low
         elif issubclass(self.genetype, int):
@@ -263,14 +262,16 @@ class GA:
             self.fitness = None # marks fitness as 'unevaluated'
 
         def __len__(self):
+            """Length of Individual is simply length of chromosome"""
             return len(self.chromosome)
 
         def __repr__(self):
-            stringrep = "Chromosome:\n"
-            for c in self.chromosome:
-                stringrep += '%f, ' % c
-            stringrep = stringrep[:-2]
-            stringrep += "\nFitness: %f\n" % self.fitness
+            stringrep = "Chromosome: "
+            stringrep += ", ".join(str(c) for c in self.chromosome)
+            if self.fitness is not None:
+                stringrep += "  Fitness: %f" % self.fitness
+            else:
+                stringrep += "  <Unevaluated>"
             return stringrep
 
         def __eq__(self, other):
