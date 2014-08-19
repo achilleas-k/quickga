@@ -2,7 +2,7 @@
     Simple genetic algorithm class in Python
 
 TODO:
-    - INSTRUCTIONS
+    - INSTRUCTIONS (note that genemax is INCLUSIVE)
     - Errors shouldn't call exit
     - Parameterise everything
     - Variable length chromosomes
@@ -133,7 +133,8 @@ class GA:
             randvars = np.random.random_sample(self.chromlength)
             mutation_value = np.random.normal(0, self.mutation_strength,
                                               self.chromlength)
-            newchrom = individual.chromosome + mutation_value*(randvars < self.mutation_probability)
+            newchrom = individual.chromosome +\
+                mutation_value*(randvars < self.mutation_probability)
             newchrom = np.clip(newchrom, *self.genebounds)
             if issubclass(individual.chromosome.dtype.type, int):
                 newchrom = np.round(newchrom)
