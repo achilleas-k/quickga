@@ -4,9 +4,10 @@
 TODO:
     - INSTRUCTIONS (note that genemax is INCLUSIVE)
     - Errors shouldn't call exit
-    - Parameterise everything
+    - Parameterise everything (max age, individuals to keep on reset)
     - Variable length chromosomes
     - More crossover, mutation and selection methods
+    - Parallel fitness evaluations
 """
 from sys import exit
 import copy
@@ -144,7 +145,7 @@ class GA:
             exit("ERROR: (Mutation) Invalid chromosome type. "
                  "Must be numpy float or int array.")
 
-    def insert(self, newinds):
+    def insert(self, *newinds):
         """
         Inserts the new individuals into the population.
         If the population exceeds the max_population limit, the worst
@@ -155,7 +156,7 @@ class GA:
         newpopsize = len(newinds)+len(self.population)
         overflow = newpopsize - self.max_population
         if overflow <= 0:
-            self.population.append(newinds)
+            self.population.extend(newinds)
         else:
             self.population = self.population[:-overflow] + newinds
 
@@ -220,7 +221,7 @@ class GA:
             else:
                 bestind_age = 0
                 bestind = copy.deepcopy(curbest)
-            if gen % 100 == 0:
+            if gen % 100 == 0:  # TODO: Parameterise reporting interval
                 self.saveprogress(gen, bestind, alltime_bestind)
                 print("Generation %i\nBest fitness: %f (all time best: %f)\n" % (
                     gen, bestind.fitness, alltime_bestind.fitness))
