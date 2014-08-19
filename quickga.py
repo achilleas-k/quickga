@@ -8,6 +8,9 @@ TODO:
     - Variable length chromosomes
     - More crossover, mutation and selection methods
     - Parallel fitness evaluations
+    - Reinsert best into population when resetting?
+    - Save progress and current configuration in a different file (not log)
+    that can be loaded directly from the class to continue the search (pickle?)
 """
 from sys import exit
 import copy
@@ -174,13 +177,14 @@ class GA:
         elif method == 'best':
             return self.population[0], self.population[1]
         elif method == 'roulette':
+            # TODO: Print to stderr
             print("WARNING: Roulette-wheel selection not yet implemented. "
                   "Falling back to random selection.")
             return self.select('rand')
         else:
             exit("ERROR: Invalid selection method")
 
-    def saveprogress(self, gen, bestind, alltime_bestind):
+    def printprogress(self, gen, bestind, alltime_bestind):
         self.logfile.write(
                 "Generation %i\n"
                 "Best individual of cur gen:\n"
@@ -201,7 +205,7 @@ class GA:
         bestind_age = 0
         # alltime_bestind holds the best individual for when the population is
         # reset
-        alltime_bestind = copy.deepcopy(self.population[0])
+        self.alltime_bestind = copy.deepcopy(self.population[0])
         for gen in range(num_generations):
             p1, p2 = self.select('rand')
             c1, c2 = self.crossover(p1, p2)
@@ -212,8 +216,8 @@ class GA:
             self.insert(c1, c2)
             self.sort_population(optargs)
             curbest = copy.deepcopy(self.population[0])
-            if curbest.fitness < alltime_bestind.fitness:
-                alltime_bestind = copy.deepcopy(curbest)
+            if curbest.fitness < self.alltime_bestind.fitness:
+                self.alltime_bestind = copy.deepcopy(curbest)
             if curbest.fitness == bestind.fitness:
                 # could use the actual chromosome instead of just fitness
                 bestind_age += 1
@@ -221,21 +225,21 @@ class GA:
                 bestind_age = 0
                 bestind = copy.deepcopy(curbest)
             if gen % 100 == 0:  # TODO: Parameterise reporting interval
-                self.saveprogress(gen, bestind, alltime_bestind)
+                self.printprogress(gen, bestind, self.alltime_bestind)
                 print("Generation %i\nBest fitness: %f (all time best: %f)\n" % (
-                    gen, bestind.fitness, alltime_bestind.fitness))
+                    gen, bestind.fitness, self.alltime_bestind.fitness))
             if bestind_age > 4000:  # arbitrary age limit (TODO: Parameterise)
                 # Recreate entire population, except best individual
                 # TODO: Also parameterise number of individuals to keep when
                 # resetting
                 print("Age limit reached. Re-initializing population\n")
                 self.logfile.write("Age limit reached. "
-                        "Re-initializing population.\n\n")
+                                   "Re-initializing population.\n\n")
                 self.init_population(self.max_population, self.chromlength)
 
-        self.saveprogress(gen, bestind, alltime_bestind)
-        print("Final generation\nBest individual:\n%s\n" % (
-            bestind))
+        self.printprogress(gen, bestind, self.alltime_bestind)
+        print("Final generation\nBest individual fitness:\n%f\n" %
+              bestind.fitness)
         self.logfile.close()
 
     class Individual:
