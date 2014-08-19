@@ -155,10 +155,9 @@ class GA:
         """
         newpopsize = len(newinds)+len(self.population)
         overflow = newpopsize - self.max_population
-        if overflow <= 0:
-            self.population.extend(newinds)
-        else:
-            self.population = self.population[:-overflow] + newinds
+        if overflow > 0:
+            self.population = self.population[:-overflow]
+        self.population.extend(newinds)
 
     def select(self, method):
         """
