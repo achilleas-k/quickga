@@ -211,8 +211,7 @@ class GA:
         will be passed on to the fitness function as supplied.
         """
         self.sort_population(optargs)
-        # it is not significant which ind we use for best and alltime best
-        # we just copy 0 to initialise the variables
+        # copy 0 to initialise the variables
         bestind = copy.deepcopy(self.population[0])
         bestind_age = 0
         # alltime_bestind holds the best individual for when the population is reshuffled
