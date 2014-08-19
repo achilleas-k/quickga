@@ -214,7 +214,8 @@ class GA:
         # copy 0 to initialise the variables
         bestind = copy.deepcopy(self.population[0])
         bestind_age = 0
-        # alltime_bestind holds the best individual for when the population is reshuffled
+        # alltime_bestind holds the best individual for when the population is
+        # reset
         alltime_bestind = copy.deepcopy(self.population[0])
         for gen in range(num_generations):
             p1, p2 = self.select('rand')
@@ -238,7 +239,7 @@ class GA:
                 self.saveprogress(gen, bestind, alltime_bestind)
                 print("Generation %i\nBest fitness: %f (all time best: %f)\n" % (
                     gen, bestind.fitness, alltime_bestind.fitness))
-            if bestind_age > 4000: #arbitrary age limit (TODO: Parameterise)
+            if bestind_age > 4000:  # arbitrary age limit (TODO: Parameterise)
                 # Recreate entire population, except best individual
                 # TODO: Also parameterise number of individuals to keep when
                 # resetting
