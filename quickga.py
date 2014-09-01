@@ -3,7 +3,7 @@
 
 TODO:
     - INSTRUCTIONS (note that genemax is INCLUSIVE)
-    - Errors shouldn't call exit
+    - Errors shouldn't call exit - use exceptions
     - Parameterise everything (max age, individuals to keep on reset)
     - Variable length chromosomes
     - More crossover, mutation and selection methods
