@@ -3,6 +3,7 @@
 
 TODO:
     - INSTRUCTIONS (note that genemax is INCLUSIVE)
+    - Multithread fitness evaluation
     - Errors shouldn't call exit - use exceptions
     - Parameterise everything (max age, individuals to keep on reset)
     - Variable length chromosomes
